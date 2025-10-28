@@ -1,0 +1,101 @@
+═══════════════════════════════════════════════════════════════════════
+  🎭 ENCUESTA DE ACTIVIDADES EN BERLÍN - INSTRUCCIONES
+═══════════════════════════════════════════════════════════════════════
+
+📁 ARCHIVOS CREADOS:
+────────────────────────────────────────────────────────────────────────
+✅ index.html       - Formulario principal para usuarios
+✅ script.js         - Lógica y datos de las actividades
+✅ admin.html        - Panel de administración para ver respuestas
+✅ README.md         - Documentación completa
+✅ INSTRUCCIONES.txt - Este archivo
+
+═══════════════════════════════════════════════════════════════════════
+  🚀 CÓMO USAR
+═══════════════════════════════════════════════════════════════════════
+
+PARA USUARIOS (Completar la encuesta):
+────────────────────────────────────────────────────────────────────────
+1. Abre "index.html" en tu navegador
+2. Ingresa tu nombre
+3. Califica cada actividad del 1 al 5
+4. Haz clic en "Enviar Respuestas"
+
+PARA ADMINISTRADORES (Ver resultados):
+────────────────────────────────────────────────────────────────────────
+1. Abre "admin.html" en tu navegador
+2. Verás estadísticas y todas las respuestas
+3. Puedes exportar a CSV o JSON
+4. Puedes borrar todos los datos si es necesario
+
+═══════════════════════════════════════════════════════════════════════
+  📊 CARACTERÍSTICAS
+═══════════════════════════════════════════════════════════════════════
+
+✨ Diseño moderno y responsive
+✨ 47 actividades organizadas en 7 categorías
+✨ Barra de progreso en tiempo real
+✨ Almacenamiento local (no requiere servidor)
+✨ Exportación a CSV y JSON
+✨ Panel de administración completo
+
+═══════════════════════════════════════════════════════════════════════
+  🎨 CATEGORÍAS DE ACTIVIDADES
+═══════════════════════════════════════════════════════════════════════
+
+1. Atracciones y Parques Temáticos (13 actividades)
+2. Cultura y Espectáculos (4 actividades)
+3. Museos y Exposiciones (11 actividades)
+4. Actividades y Deporte (14 actividades)
+5. Turismo (12 actividades)
+6. Gastronomía y Vida Nocturna (5 actividades)
+7. Relax (4 actividades)
+
+TOTAL: 47 actividades
+
+═══════════════════════════════════════════════════════════════════════
+  💾 ALMACENAMIENTO DE DATOS
+═══════════════════════════════════════════════════════════════════════
+
+• Los datos se guardan en el navegador (localStorage)
+• No se envía información a ningún servidor
+• Cada respuesta incluye: nombre, fecha/hora, y calificaciones
+• Los datos persisten hasta que se borren manualmente
+
+═══════════════════════════════════════════════════════════════════════
+  🔧 PERSONALIZACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+Para cambiar actividades:
+→ Edita el objeto "activities" en script.js
+
+Para cambiar colores:
+→ Edita los gradientes CSS en index.html
+
+Para agregar funcionalidades:
+→ Modifica script.js según tus necesidades
+
+═══════════════════════════════════════════════════════════════════════
+  📱 COMPATIBILIDAD
+═══════════════════════════════════════════════════════════════════════
+
+✅ Chrome, Firefox, Safari, Edge (últimas versiones)
+✅ Dispositivos móviles (iOS, Android)
+✅ Tablets
+✅ Desktop
+
+═══════════════════════════════════════════════════════════════════════
+  🎯 PRÓXIMOS PASOS
+═══════════════════════════════════════════════════════════════════════
+
+1. Abre index.html para probar el formulario
+2. Completa una encuesta de prueba
+3. Abre admin.html para ver los resultados
+4. Exporta los datos si lo necesitas
+5. ¡Comparte el formulario con otros!
+
+═══════════════════════════════════════════════════════════════════════
+
+¡Listo para usar! 🎉
+
+═══════════════════════════════════════════════════════════════════════
