@@ -1,3 +1,10 @@
+// ============================================================================
+// CONFIGURATION - PASTE YOUR GOOGLE APPS SCRIPT URL HERE
+// ============================================================================
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycb7hJDvCduGK9t1nSWfUnbci1l1DVCKDgA5Ls3UnmxnDaVYz4gGB8O889J7DLlLp2/exec';
+// Get this URL from: Google Apps Script → Deploy → New deployment → Web app
+// ============================================================================
+
 // Activities data organized by category
 const activities = {
     "Atracciones y Parques Temáticos": [
@@ -172,7 +179,7 @@ function submitForm() {
         });
     }
     
-    // Save to localStorage
+    // Save response
     saveResponse(responses);
     
     // Show success message
@@ -180,17 +187,38 @@ function submitForm() {
     document.getElementById('successMessage').classList.add('active');
     document.getElementById('thankYouMessage').textContent = 
         `${userName}, tus respuestas han sido guardadas. ¡Gracias por tu tiempo!`;
-    
-    // Log to console (in production, send to server)
-    console.log('Responses:', responses);
 }
 
-// Save response to localStorage
-function saveResponse(response) {
-    const responses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
+// Save response to Google Sheets AND localStorage (fallback)
+async function saveResponse(response) {
     response.timestamp = new Date().toISOString();
-    responses.push(response);
-    localStorage.setItem('activityResponses', JSON.stringify(responses));
+    
+    // Always save to localStorage as backup
+    const localResponses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
+    localResponses.push(response);
+    localStorage.setItem('activityResponses', JSON.stringify(localResponses));
+    
+    // Try to save to Google Sheets
+    if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbycb7hJDvCduGK9t1nSWfUnbci1l1DVCKDgA5Ls3UnmxnDaVYz4gGB8O889J7DLlLp2/exec') {
+        try {
+            const result = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Required for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(response)
+            });
+            
+            console.log('✅ Response saved to Google Sheets');
+        } catch (error) {
+            console.error('❌ Error saving to Google Sheets:', error);
+            console.log('✅ Response saved to localStorage as fallback');
+        }
+    } else {
+        console.log('ℹ️ Google Sheets not configured. Response saved to localStorage only.');
+        console.log('To enable Google Sheets: Update GOOGLE_SCRIPT_URL at the top of this file');
+    }
 }
 
 // Reset form
@@ -203,7 +231,7 @@ function resetForm() {
     document.getElementById('progressFill').style.width = '0%';
 }
 
-// View all responses (admin function)
+// View all responses (admin function - works with localStorage)
 function viewResponses() {
     const responses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
     console.table(responses);
@@ -228,7 +256,7 @@ function exportToCSV() {
     // Add data rows
     responses.forEach(response => {
         const row = [
-            response.name,
+            `"${response.name}"`,
             new Date(response.timestamp).toLocaleString(),
             ...allActivities.map(activity => response.ratings[activity] || '')
         ];
@@ -252,4 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
             startRating();
         }
     });
+    
+    // Check if Google Sheets is configured
+    if (GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbycb7hJDvCduGK9t1nSWfUnbci1l1DVCKDgA5Ls3UnmxnDaVYz4gGB8O889J7DLlLp2/exec') {
+        console.log('⚠️ Google Sheets integration not configured');
+        console.log('📝 Responses will be saved to localStorage only');
+        console.log('💡 See DEPLOYMENT_GUIDE.md for setup instructions');
+    }
 });
