@@ -177,16 +177,42 @@
         </div>
     </div>
 
-    <script>
-        function loadResponses() {
-            const responses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
+    <script type="module">
+        import { db, collection, getDocs, query, orderBy } from './firebase-config.js';
+
+        let allResponses = [];
+
+        async function loadResponses() {
+            try {
+                // Load from Firebase Firestore
+                const responsesRef = collection(db, 'responses');
+                const q = query(responsesRef, orderBy('timestamp', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                allResponses = [];
+                querySnapshot.forEach((doc) => {
+                    allResponses.push({ id: doc.id, ...doc.data() });
+                });
+                
+                console.log(`✅ Loaded ${allResponses.length} responses from Firebase`);
+                
+            } catch (error) {
+                console.error('❌ Error loading from Firebase:', error);
+                console.log('📝 Loading from localStorage as fallback');
+                
+                // Fallback to localStorage
+                allResponses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
+            }
             
             // Update stats
-            updateStats(responses);
+            updateStats(allResponses);
             
             // Display responses
-            displayResponses(responses);
+            displayResponses(allResponses);
         }
+
+        // Make loadResponses available globally
+        window.loadResponses = loadResponses;
 
         function updateStats(responses) {
             const statsContainer = document.getElementById('stats');
@@ -264,8 +290,7 @@
         }
 
         function viewDetails(index) {
-            const responses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
-            const response = responses[index];
+            const response = allResponses[index];
             
             let details = `Respuestas de ${response.name}:\n\n`;
             
@@ -275,9 +300,12 @@
             
             alert(details);
         }
+        
+        // Make viewDetails available globally
+        window.viewDetails = viewDetails;
 
         function exportToCSV() {
-            const responses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
+            const responses = allResponses;
             
             if (responses.length === 0) {
                 alert('No hay respuestas para exportar');
@@ -309,7 +337,7 @@
         }
 
         function exportToJSON() {
-            const responses = JSON.parse(localStorage.getItem('activityResponses') || '[]');
+            const responses = allResponses;
             
             if (responses.length === 0) {
                 alert('No hay respuestas para exportar');
@@ -319,6 +347,10 @@
             const json = JSON.stringify(responses, null, 2);
             downloadFile(json, 'respuestas_actividades.json', 'application/json');
         }
+        
+        // Make exportToCSV and exportToJSON available globally
+        window.exportToCSV = exportToCSV;
+        window.exportToJSON = exportToJSON;
 
         function downloadFile(content, filename, type) {
             const blob = new Blob([content], { type });
@@ -331,12 +363,15 @@
         }
 
         function clearAllData() {
-            if (confirm('¿Estás seguro de que quieres borrar TODAS las respuestas? Esta acción no se puede deshacer.')) {
+            if (confirm('⚠️ ADVERTENCIA: Esta acción solo borrará los datos de localStorage.\n\nPara borrar datos de Firebase, debes hacerlo desde la consola de Firebase.\n\n¿Deseas continuar y borrar solo localStorage?')) {
                 localStorage.removeItem('activityResponses');
                 loadResponses();
-                alert('Todos los datos han sido eliminados');
+                alert('✅ Datos de localStorage eliminados');
             }
         }
+        
+        // Make clearAllData available globally
+        window.clearAllData = clearAllData;
 
         // Load on page load
         window.addEventListener('DOMContentLoaded', loadResponses);
